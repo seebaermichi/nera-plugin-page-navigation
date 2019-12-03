@@ -1,0 +1,20 @@
+mixin link(item, activeClass)
+  a(href=item.href, class=activeClass) #{ item.name }
+
+mixin simpleNav()
+  nav
+    include setup
+      +link(item, activeClass)
+
+mixin pipeSeparated()
+  nav
+    include setup
+      if index !== 0
+        | &nbsp;|&nbsp;
+      +link(item, activeClass)
+
+mixin linkList()
+  ul.nav
+    include setup
+      li.nav-item
+        +link(item, activeClass)
