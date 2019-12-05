@@ -16,5 +16,6 @@ page_navigation:
     name: 'External Link'
 ```
 or leave this property and then the direct siblings of the current page are shown.  
+You can influence the position of the page in the page navigation by adding the property `position` with a valid integer to the markdown file of the page. The pages are ordered ascendend.  
 
 Finally you need to include the `src/plugins/page-navigation/views/page-navigation.pug` where ever you want to have your page navigation. Be aware that there are already different types for the page navigation available. Just uncomment the version you need or prefer.
