@@ -1,21 +1,140 @@
-# Page navigation - Nera plugin
-This is a plugin for the static side generator [nera](https://github.com/seebaermichi/nera) to create a page navigation.
+# @nera-static/plugin-page-navigation
 
-__Note__
->For now it can only shows the siblings of the current page.  
+A plugin for the [Nera](https://github.com/seebaermichi/nera) static site generator that creates a navigation between sibling pages or uses custom navigation definitions. Lightweight, flexible, and easy to integrate in any layout.
 
-## Usage
-At first you need to place this plugin in the `src/plugins` folder of your nera project.  
+## ✨ Features
 
-You can either define the elements of the page navigation within the meta section of your markdown file by adding a `page_navigation` property there. For example like this:
-```yaml
-page_navigation:
-  - href: '#'
-    name: 'Home'
-  - href: 'https://external/link.html'
-    name: 'External Link'
+-   Automatically adds navigation based on sibling pages
+-   Supports custom navigation via frontmatter
+-   Optional sorting via `position` meta field
+-   Configurable `active` class for the current page
+-   Includes a ready-to-use Pug view
+
+## 🚀 Installation
+
+Install the plugin in your Nera project:
+
+```bash
+npm install @nera-static/plugin-page-navigation
 ```
-or leave this property and then the direct siblings of the current page are shown.  
-You can influence the position of the page in the page navigation by adding the property `position` with a valid integer to the markdown file of the page. The pages are ordered ascendend.  
 
-Finally you need to include the `src/plugins/page-navigation/views/page-navigation.pug` where ever you want to have your page navigation. Be aware that there are already different types for the page navigation available. Just uncomment the version you need or prefer.
+Nera will automatically detect the plugin and apply the page navigation metadata during the build.
+
+## 🛠️ Usage
+
+### Automatic sibling navigation
+
+If you don’t define a `page_navigation` property in your markdown file, the plugin will automatically collect sibling pages from the same directory.
+
+You can define a `position` field to control the sorting:
+
+```yaml
+---
+title: Page A
+type: page
+position: 1
+---
+```
+
+### Custom navigation
+
+To override the navigation, define it in the frontmatter like this:
+
+```yaml
+---
+title: Page with custom nav
+type: page
+page_navigation:
+    - href: /index.html
+      name: Home
+    - href: /contact.html
+      name: Contact
+---
+```
+
+## 🛠️ Publish Default Template
+
+Use the default template provided by the plugin:
+
+```bash
+npx @nera-static/plugin-page-navigation run publish-template
+```
+
+This copies the template to:
+
+```
+views/vendor/plugin-page-navigation/page-navigation.pug
+```
+
+> 💡 The file contains multiple layout options. Uncomment the version that fits your needs.
+
+### Using the template in your layout
+
+Once published, include the navigation in your Pug templates:
+
+```pug
+include views/vendor/plugin-page-navigation/page-navigation
+```
+
+The plugin provides three navigation styles:
+
+-   `+simpleNav` - Basic horizontal navigation (default)
+-   `+pipeSeparated` - Navigation with pipe separators
+-   `+linkList` - Unordered list navigation
+
+### Available metadata
+
+The plugin adds the following data to each page's `meta` object:
+
+```javascript
+meta.pageNav = {
+    activeClass: 'active', // CSS class for current page
+    elements: [
+        // Array of navigation items
+        {
+            name: 'Page Title',
+            href: '/path/to/page.html',
+            current: true, // true for current page
+            position: 1,
+        },
+    ],
+}
+```
+
+## ⚙️ Configuration
+
+```yaml
+# config/page-navigation.yaml
+active_page_nav_class: 'active'
+```
+
+This class will be applied to the currently active page in the navigation.
+
+## 🧪 Development
+
+```bash
+npm install
+npm test
+```
+
+Tests use [Vitest](https://vitest.dev) and cover:
+
+-   Sibling navigation detection
+-   Custom overrides
+-   Sorting via position
+-   Active class behavior
+
+## 🧑‍💻 Author
+
+Michael Becker  
+[https://github.com/seebaermichi](https://github.com/seebaermichi)
+
+## 🔗 Links
+
+-   [Plugin Repository](https://github.com/seebaermichi/nera-plugin-page-navigation)
+-   [NPM Package](https://www.npmjs.com/package/@nera-static/plugin-page-navigation)
+-   [Nera Static Site Generator](https://github.com/seebaermichi/nera)
+
+## 📦 License
+
+MIT

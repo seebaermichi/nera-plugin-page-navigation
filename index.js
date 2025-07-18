@@ -1,42 +1,60 @@
-const path = require('path')
+import path from 'path'
+import { getConfig } from '@nera-static/plugin-utils'
 
-const { getConfig } = require('../plugin-helper')
+const HOST_CONFIG_PATH = path.resolve(
+    process.cwd(),
+    'config/page-navigation.yaml'
+)
 
-module.exports = (() => {
-  const config = getConfig(`${__dirname}/config/page-navigation.yaml`)
+const config = getConfig(HOST_CONFIG_PATH)
 
-  const getPageNavigation = (pagesData, currentHref) => {
-    const pageNav = pagesData.filter(({ meta }) => path.dirname(currentHref) !== '/'
-      && path.dirname(meta.htmlPathName) === path.dirname(currentHref)
-    )
-    .map(({ meta }, index) => ({
-        current: meta.htmlPathName === currentHref,
-        name: meta.title,
-        position: meta.position || index,
-        href: meta.htmlPathName
-      }))
-      .sort((a, b) => a.position - b.position)
+/**
+ * Build a sibling navigation for the current page.
+ * @param {Array} pagesData - Array of page data objects
+ * @param {string} currentHref - Current page href
+ * @returns {Array} Array of navigation items
+ */
+function getPageNavigation(pagesData, currentHref) {
+    const currentDir = path.dirname(currentHref)
 
-      return pageNav.length > 1 ? pageNav : []
-  }
-
-  const getMetaData = data => {
-    if (data.pagesData !== null && typeof data.pagesData === 'object') {
-      return data.pagesData.map(({ content, meta }) => ({
-        content,
-        meta: Object.assign({}, meta, {
-          pageNav: {
-            activeClass: config.active_page_nav_class,
-            elements: meta.page_navigation || getPageNavigation(data.pagesData, meta.htmlPathName),
-          }
+    return pagesData
+        .filter(({ meta }) => {
+            const pageDir = meta.dirname
+            return currentDir !== '/' && pageDir === currentDir
         })
-      }))
+        .map(({ meta }, index) => ({
+            current: meta.href === currentHref,
+            name: meta.title,
+            position: meta.position ?? index,
+            href: meta.href,
+        }))
+        .sort((a, b) => a.position - b.position)
+}
+
+/**
+ * Inject page navigation into each page's meta data.
+ * @param {Object} data - The data object containing pagesData
+ * @param {Array} data.pagesData - Array of page data objects
+ * @returns {Array} Array of processed page data with navigation
+ */
+export function getMetaData(data) {
+    if (!data || !Array.isArray(data.pagesData)) {
+        return data?.pagesData || []
     }
 
-    return data.pagesData
-  }
+    return data.pagesData.map(({ content, meta }) => {
+        const pageNav =
+            meta.page_navigation || getPageNavigation(data.pagesData, meta.href)
 
-  return {
-    getMetaData
-  }
-})()
+        return {
+            content,
+            meta: {
+                ...meta,
+                pageNav: {
+                    activeClass: config.active_page_nav_class,
+                    elements: pageNav.length > 1 ? pageNav : [],
+                },
+            },
+        }
+    })
+}
