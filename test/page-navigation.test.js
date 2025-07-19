@@ -97,7 +97,7 @@ describe('Page Navigation Plugin', () => {
         const html = compileTemplate({
             meta: {
                 pageNav: {
-                    activeClass: 'active',
+                    activeClass: 'page-nav__link--active',
                     elements: [
                         { name: 'Home', href: '/index.html', current: false },
                         { name: 'About', href: '/about.html', current: true },
@@ -117,15 +117,17 @@ describe('Page Navigation Plugin', () => {
         expect(links).toHaveLength(3)
 
         expect(links.eq(0).attr('href')).toBe('/index.html')
-        expect(links.eq(0).attr('class')).toBeUndefined()
+        expect(links.eq(0).attr('class')).toBe('page-nav__link')
         expect(links.eq(0).text()).toBe('Home')
 
         expect(links.eq(1).attr('href')).toBe('/about.html')
-        expect(links.eq(1).attr('class')).toBe('active')
+        expect(links.eq(1).attr('class')).toBe(
+            'page-nav__link page-nav__link--active'
+        )
         expect(links.eq(1).text()).toBe('About')
 
         expect(links.eq(2).attr('href')).toBe('/contact.html')
-        expect(links.eq(2).attr('class')).toBeUndefined()
+        expect(links.eq(2).attr('class')).toBe('page-nav__link')
         expect(links.eq(2).text()).toBe('Contact')
     })
 })

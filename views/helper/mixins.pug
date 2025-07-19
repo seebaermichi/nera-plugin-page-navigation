@@ -1,20 +1,21 @@
 mixin link(item, activeClass)
-  a(href=item.href, class=activeClass) #{ item.name }
+  - const classes = activeClass ? `page-nav__link ${activeClass}` : 'page-nav__link'
+  a(href=item.href, class=classes) #{ item.name }
 
 mixin simpleNav()
-  nav
+  nav.page-nav
     include setup
       +link(item, activeClass)
 
 mixin pipeSeparated()
-  nav
+  nav.page-nav.page-nav--pipe-separated
     include setup
       if index !== 0
         | &nbsp;|&nbsp;
       +link(item, activeClass)
 
 mixin linkList()
-  ul.nav
+  ul.page-nav.page-nav--list
     include setup
-      li.nav-item
+      li.page-nav__item
         +link(item, activeClass)

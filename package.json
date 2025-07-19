@@ -1,7 +1,7 @@
 {
     "name": "@nera-static/plugin-page-navigation",
-    "version": "2.0.0",
-    "description": "A plugin for static side generator nera to create a page navigation.",
+    "version": "2.1.0",
+    "description": "A plugin for Nera static site generator to create sibling page navigation within directories. Perfect for section-based navigation and multi-page document structures.",
     "main": "index.js",
     "scripts": {
         "publish-template": "node ./bin/publish-template.js",
@@ -25,8 +25,13 @@
     "keywords": [
         "nera",
         "plugin",
-        "page navigation",
-        "static-site"
+        "page-navigation",
+        "sibling-navigation",
+        "static-site",
+        "static-site-generator",
+        "directory-navigation",
+        "navigation",
+        "template"
     ],
     "author": "Michael Becker",
     "license": "MIT",
@@ -39,7 +44,7 @@
     },
     "homepage": "https://github.com/seebaermichi/nera-plugin-page-navigation#readme",
     "dependencies": {
-        "@nera-static/plugin-utils": "^1.0.3"
+        "@nera-static/plugin-utils": "^1.1.0"
     },
     "engines": {
         "node": ">=18"

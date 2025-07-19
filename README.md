@@ -115,6 +115,8 @@ This class will be applied to the currently active page in the navigation.
 ```bash
 npm install
 npm test
+npm run lint
+npm run publish-template  # Publish templates to your project
 ```
 
 Tests use [Vitest](https://vitest.dev) and cover:
@@ -123,6 +125,27 @@ Tests use [Vitest](https://vitest.dev) and cover:
 -   Custom overrides
 -   Sorting via position
 -   Active class behavior
+
+### 🔄 Compatibility
+
+-   **Nera v4.1.0+**: Full compatibility with latest static site generator
+-   **Node.js 18+**: Modern JavaScript features and ES modules
+-   **Plugin Utils v1.1.0+**: Enhanced plugin utilities integration
+
+### 🏗️ Architecture
+
+This plugin uses the `getMetaData()` function to process page data and inject sibling navigation information. It automatically detects pages in the same directory and provides multiple template formats.
+
+### 🎨 BEM CSS Classes
+
+The plugin uses BEM (Block Element Modifier) methodology:
+
+-   `.page-nav` - Main navigation block
+-   `.page-nav__item` - Navigation list items
+-   `.page-nav__link` - Navigation links
+-   `.page-nav__link--active` - Active page link
+-   `.page-nav--list` - List-style navigation
+-   `.page-nav--pipe-separated` - Pipe-separated navigation
 
 ## 🧑‍💻 Author
 
@@ -134,6 +157,7 @@ Michael Becker
 -   [Plugin Repository](https://github.com/seebaermichi/nera-plugin-page-navigation)
 -   [NPM Package](https://www.npmjs.com/package/@nera-static/plugin-page-navigation)
 -   [Nera Static Site Generator](https://github.com/seebaermichi/nera)
+-   [Plugin Documentation](https://github.com/seebaermichi/nera#plugins)
 
 ## 📦 License
 
