@@ -1,14 +1,15 @@
 # @nera-static/plugin-page-navigation
 
-A plugin for the [Nera](https://github.com/seebaermichi/nera) static site generator that creates a navigation between sibling pages or uses custom navigation definitions. Lightweight, flexible, and easy to integrate in any layout.
+A plugin for the [Nera](https://github.com/seebaermichi/nera) static site generator that creates navigation between sibling pages or allows custom definitions via frontmatter. Lightweight, flexible, and easy to integrate in any layout.
 
 ## ✨ Features
 
--   Automatically adds navigation based on sibling pages
--   Supports custom navigation via frontmatter
--   Optional sorting via `position` meta field
--   Configurable `active` class for the current page
--   Includes a ready-to-use Pug view
+- Automatically adds navigation based on sibling pages
+- Supports custom navigation overrides via frontmatter
+- Optional sorting using `position` field
+- Configurable `active` class for highlighting current page
+- Includes a ready-to-use Pug template with multiple layout options
+- Full compatibility with Nera v4.1.0+
 
 ## 🚀 Installation
 
@@ -18,41 +19,66 @@ Install the plugin in your Nera project:
 npm install @nera-static/plugin-page-navigation
 ```
 
-Nera will automatically detect the plugin and apply the page navigation metadata during the build.
+Nera will automatically detect the plugin and apply the navigation metadata during the build process.
 
-## 🛠️ Usage
+## ⚙️ Configuration
+
+Create an optional configuration file to define the active class name:
+
+```yaml
+# config/page-navigation.yaml
+active_page_nav_class: 'active'
+```
+
+This class will be applied to the current page in the generated navigation.
+
+## 🧩 Usage
 
 ### Automatic sibling navigation
 
-If you don’t define a `page_navigation` property in your markdown file, the plugin will automatically collect sibling pages from the same directory.
-
-You can define a `position` field to control the sorting:
+By default, pages in the same directory are grouped as siblings. You can optionally define `position` to control the sort order:
 
 ```yaml
 ---
 title: Page A
-type: page
 position: 1
 ---
 ```
 
-### Custom navigation
+### Custom navigation via frontmatter
 
-To override the navigation, define it in the frontmatter like this:
+You can override the default navigation for a page by defining `page_navigation`:
 
 ```yaml
 ---
 title: Page with custom nav
-type: page
 page_navigation:
-    - href: /index.html
-      name: Home
-    - href: /contact.html
-      name: Contact
+  - href: /index.html
+    name: Home
+  - href: /contact.html
+    name: Contact
 ---
 ```
 
-## 🛠️ Publish Default Template
+### Navigation metadata
+
+Each page receives the following structure in `meta.pageNav`:
+
+```javascript
+meta.pageNav = {
+  activeClass: 'active',
+  elements: [
+    {
+      name: 'Page Title',
+      href: '/path/to/page.html',
+      current: true,
+      position: 1
+    },
+  ]
+}
+```
+
+## 🛠️ Template Publishing
 
 Use the default template provided by the plugin:
 
@@ -66,49 +92,38 @@ This copies the template to:
 views/vendor/plugin-page-navigation/page-navigation.pug
 ```
 
-> 💡 The file contains multiple layout options. Uncomment the version that fits your needs.
-
-### Using the template in your layout
-
-Once published, include the navigation in your Pug templates:
+Then include it in your layout:
 
 ```pug
 include views/vendor/plugin-page-navigation/page-navigation
 ```
 
-The plugin provides three navigation styles:
+### Available navigation styles
 
--   `+simpleNav` - Basic horizontal navigation (default)
--   `+pipeSeparated` - Navigation with pipe separators
--   `+linkList` - Unordered list navigation
+- `+simpleNav` – Basic horizontal navigation
+- `+pipeSeparated` – Pipe-separated links
+- `+linkList` – List-based navigation
 
-### Available metadata
+Uncomment the layout option that suits your needs inside the template file.
 
-The plugin adds the following data to each page's `meta` object:
+## 🎨 Styling
 
-```javascript
-meta.pageNav = {
-    activeClass: 'active', // CSS class for current page
-    elements: [
-        // Array of navigation items
-        {
-            name: 'Page Title',
-            href: '/path/to/page.html',
-            current: true, // true for current page
-            position: 1,
-        },
-    ],
-}
+The plugin uses BEM CSS methodology:
+
+```css
+.page-nav { }
+.page-nav__item { }
+.page-nav__link { }
+.page-nav__link--active { }
+.page-nav--list { }
+.page-nav--pipe-separated { }
 ```
 
-## ⚙️ Configuration
+Customize or override these classes in your CSS.
 
-```yaml
-# config/page-navigation.yaml
-active_page_nav_class: 'active'
-```
+## 📊 Generated Output
 
-This class will be applied to the currently active page in the navigation.
+The plugin injects navigation metadata into each page’s `meta` object. The rendered output depends on the included template or custom markup.
 
 ## 🧪 Development
 
@@ -116,48 +131,31 @@ This class will be applied to the currently active page in the navigation.
 npm install
 npm test
 npm run lint
-npm run publish-template  # Publish templates to your project
 ```
 
 Tests use [Vitest](https://vitest.dev) and cover:
 
--   Sibling navigation detection
--   Custom overrides
--   Sorting via position
--   Active class behavior
-
-### 🔄 Compatibility
-
--   **Nera v4.1.0+**: Full compatibility with latest static site generator
--   **Node.js 18+**: Modern JavaScript features and ES modules
--   **Plugin Utils v1.1.0+**: Enhanced plugin utilities integration
-
-### 🏗️ Architecture
-
-This plugin uses the `getMetaData()` function to process page data and inject sibling navigation information. It automatically detects pages in the same directory and provides multiple template formats.
-
-### 🎨 BEM CSS Classes
-
-The plugin uses BEM (Block Element Modifier) methodology:
-
--   `.page-nav` - Main navigation block
--   `.page-nav__item` - Navigation list items
--   `.page-nav__link` - Navigation links
--   `.page-nav__link--active` - Active page link
--   `.page-nav--list` - List-style navigation
--   `.page-nav--pipe-separated` - Pipe-separated navigation
+- Sibling detection and ordering
+- Custom override behavior
+- Template rendering
+- Active class logic
 
 ## 🧑‍💻 Author
 
-Michael Becker  
+Michael Becker
 [https://github.com/seebaermichi](https://github.com/seebaermichi)
 
 ## 🔗 Links
 
--   [Plugin Repository](https://github.com/seebaermichi/nera-plugin-page-navigation)
--   [NPM Package](https://www.npmjs.com/package/@nera-static/plugin-page-navigation)
--   [Nera Static Site Generator](https://github.com/seebaermichi/nera)
--   [Plugin Documentation](https://github.com/seebaermichi/nera#plugins)
+- [Plugin Repository](https://github.com/seebaermichi/nera-plugin-page-navigation)
+- [NPM Package](https://www.npmjs.com/package/@nera-static/plugin-page-navigation)
+- [Nera Static Site Generator](https://github.com/seebaermichi/nera)
+
+## 🧩 Compatibility
+
+- **Nera**: v4.1.0+
+- **Node.js**: >= 18
+- **Plugin API**: Uses `getMetaData()` for injecting navigation metadata
 
 ## 📦 License
 
