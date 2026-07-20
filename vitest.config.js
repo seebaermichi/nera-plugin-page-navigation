@@ -1,6 +1,5 @@
-export default {
-    test: {
-        setupFiles: ['./test/setup.js'],
-        globalTeardown: './test/teardown.js',
-    },
-}
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+    test: {},
+})

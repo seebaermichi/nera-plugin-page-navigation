@@ -1,6 +1,10 @@
-include ../node_modules/@nera-static/plugin-page-navigation/views/helper/mixins
+//- Relative to this file, so it resolves both in the package and after
+//- publishing to views/vendor/plugin-page-navigation/. The previous
+//- `../node_modules/@nera-static/plugin-page-navigation/views/helper/mixins`
+//- resolved to views/vendor/node_modules/… once published — nothing is there.
+include helper/mixins
 
-if (meta.pageNav.elements.length > 0)
+if (meta.pageNav && meta.pageNav.elements && meta.pageNav.elements.length > 0)
   +simpleNav
   //- +pipeSeparated
   //- +linkList

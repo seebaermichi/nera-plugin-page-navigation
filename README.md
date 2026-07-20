@@ -23,14 +23,18 @@ Nera will automatically detect the plugin and apply the navigation metadata duri
 
 ## ⚙️ Configuration
 
-Create an optional configuration file to define the active class name:
+Create an optional configuration file to override the active class name:
 
 ```yaml
 # config/page-navigation.yaml
-active_page_nav_class: 'active'
+active_page_nav_class: 'page-nav__link--active'
 ```
 
-This class will be applied to the current page in the generated navigation.
+This class is applied to the current page's link in the generated navigation,
+alongside `page-nav__link`.
+
+The value shown is the **default**, used when no config file is present — so
+the file is genuinely optional. Set it only to use a different class name.
 
 ## 🧩 Usage
 
@@ -83,20 +87,35 @@ meta.pageNav = {
 Use the default template provided by the plugin:
 
 ```bash
-npx @nera-static/plugin-page-navigation run publish-template
+npx nera-page-navigation
 ```
 
-This copies the template to:
+This copies the template and the mixins it depends on:
 
 ```
-views/vendor/plugin-page-navigation/page-navigation.pug
+views/vendor/plugin-page-navigation/
+├── page-navigation.pug
+└── helper/
+    ├── mixins.pug
+    └── setup.pug
+```
+
+Publishing skips when the directory already exists, so re-running never
+discards your edits. To overwrite with the packaged versions:
+
+```bash
+npx nera-page-navigation --force
 ```
 
 Then include it in your layout:
 
 ```pug
-include views/vendor/plugin-page-navigation/page-navigation
+include ../vendor/plugin-page-navigation/page-navigation
 ```
+
+The path is relative to the **including file**, so from a layout in
+`views/layouts/` this resolves to `views/vendor/…`. A bare
+`views/vendor/…` would resolve to `views/layouts/views/vendor/…` and fail.
 
 ### Available navigation styles
 

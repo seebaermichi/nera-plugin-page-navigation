@@ -5,6 +5,57 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-07-20
+
+### Added
+
+-   `helper/mixins.pug` and `helper/setup.pug` are now published alongside
+    `page-navigation.pug`. Only the entry template was copied before, so the
+    documented `+simpleNav`, `+pipeSeparated` and `+linkList` mixins had no
+    source to come from
+-   `--force` flag on `nera-page-navigation`, to re-publish over an existing
+    `views/vendor/plugin-page-navigation/`. Without it, publishing skips as
+    before
+
+### Fixed
+
+-   **the published template can now actually compile.** It began with
+    `include ../node_modules/@nera-static/plugin-page-navigation/views/helper/mixins`,
+    which resolves to `views/vendor/node_modules/…` once published — a path
+    that never exists. Rendering a site failed with
+    `ENOENT: ... views/vendor/node_modules/@nera-static/plugin-page-navigation/views/helper/mixins.pug`.
+    The include is now relative to the template itself
+-   **the active-link class no longer disappears without a config file.**
+    `activeClass` came straight from config with no JS fallback, so a site
+    with no `config/page-navigation.yaml` got `undefined` and the current page
+    was styled like every other link. It now defaults to
+    `page-nav__link--active`, matching the shipped config
+-   **page ordering is deterministic when only some pages set `position`.**
+    The fallback was the page's index in the *unsorted* filtered list, so an
+    explicit `position: 1` tied with the second unpositioned page and the
+    winner depended on `fs.readdir` order. Pages with an explicit `position`
+    now come first, ordered by it; the rest follow, ordered by `href`
+-   `position: 0` is treated as a real value rather than as absent
+-   a non-array `page_navigation` is ignored instead of being passed to the
+    template. A string of two or more characters passed the old `length > 1`
+    check and pug then iterated it one character at a time, rendering a link
+    per letter
+
+### Changed
+
+-   configuration is read inside `getMetaData` rather than at module load, so
+    edits take effect without a restart
+-   `@nera-static/plugin-utils` range raised to `^1.2.0`, where `force` lands
+
+### Documentation
+
+-   the include example uses the layout-relative form; the documented
+    `views/vendor/…` resolved to `views/layouts/views/vendor/…` and could
+    never work
+-   the configuration example now shows the real default,
+    `page-nav__link--active`, instead of `active`, which nothing used
+-   fixed an invalid `npx` invocation; the command is `npx nera-page-navigation`
+
 ## [2.1.0] - 2024-12-27
 
 ### Added
