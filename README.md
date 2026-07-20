@@ -1,5 +1,8 @@
 # @nera-static/plugin-page-navigation
 
+[![Test](https://github.com/seebaermichi/nera-plugin-page-navigation/actions/workflows/test.yml/badge.svg)](https://github.com/seebaermichi/nera-plugin-page-navigation/actions/workflows/test.yml)
+[![npm version](https://img.shields.io/npm/v/@nera-static/plugin-page-navigation)](https://www.npmjs.com/package/@nera-static/plugin-page-navigation)
+
 A plugin for the [Nera](https://github.com/seebaermichi/nera) static site generator that creates navigation between sibling pages or allows custom definitions via frontmatter. Lightweight, flexible, and easy to integrate in any layout.
 
 ## ✨ Features
