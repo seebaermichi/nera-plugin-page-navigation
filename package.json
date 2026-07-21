@@ -1,6 +1,6 @@
 {
     "name": "@nera-static/plugin-page-navigation",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "description": "A plugin for Nera static site generator to create sibling page navigation within directories. Perfect for section-based navigation and multi-page document structures.",
     "main": "index.js",
     "scripts": {
@@ -51,7 +51,7 @@
         "@nera-static/plugin-utils": "^1.2.0"
     },
     "engines": {
-        "node": ">=18"
+        "node": ">=20.0.0"
     },
     "devDependencies": {
         "cheerio": "^1.1.0",
