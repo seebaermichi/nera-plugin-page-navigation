@@ -4,7 +4,7 @@ import path from 'path'
 import pug from 'pug'
 import { load } from 'cheerio'
 import { fileURLToPath } from 'url'
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { getMetaData } from '../index.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -180,6 +180,118 @@ describe('Page Navigation Plugin', () => {
             })
 
             expect(result[0].meta.pageNav.elements).toEqual([])
+        })
+
+        // Regression: an empty list item under `page_navigation:` is parsed by
+        // js-yaml as null, reached the template, and threw
+        // `Cannot read properties of null (reading 'current')`. Nothing in the
+        // generator catches a render error, so it killed the whole build.
+        it('drops a null entry instead of letting the render throw', () => {
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+            const result = getMetaData({
+                pagesData: [
+                    page('N', '/n.html', '/', {
+                        page_navigation: [
+                            { href: '/a.html', name: 'A' },
+                            null,
+                            { href: '/b.html', name: 'B' },
+                        ],
+                    }),
+                ],
+            })
+
+            expect(result[0].meta.pageNav.elements).toEqual([
+                { href: '/a.html', name: 'A' },
+                { href: '/b.html', name: 'B' },
+            ])
+            expect(warn).toHaveBeenCalledTimes(1)
+            expect(warn.mock.calls[0][0]).toContain('/n.html')
+
+            warn.mockRestore()
+        })
+
+        it('drops entries that are not mappings', () => {
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+            const result = getMetaData({
+                pagesData: [
+                    page('N', '/n.html', '/', {
+                        page_navigation: [
+                            'oops',
+                            ['also', 'wrong'],
+                            { href: '/a.html', name: 'A' },
+                        ],
+                    }),
+                ],
+            })
+
+            expect(result[0].meta.pageNav.elements).toEqual([
+                { href: '/a.html', name: 'A' },
+            ])
+            expect(warn).toHaveBeenCalledTimes(2)
+
+            warn.mockRestore()
+        })
+
+        it('renders a nav containing a null entry without throwing', () => {
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+
+            const meta = getMetaData({
+                pagesData: [
+                    page('N', '/n.html', '/', {
+                        page_navigation: [{ href: '/a.html', name: 'A' }, null],
+                    }),
+                ],
+            })[0].meta
+
+            expect(() =>
+                pug.compileFile(path.join(VIEWS, 'page-navigation.pug'))({
+                    meta,
+                })
+            ).not.toThrow()
+
+            warn.mockRestore()
+        })
+    })
+
+    describe('minimum entry count', () => {
+        // A derived sibling nav needs two pages — a lone page linking only to
+        // itself is noise. An explicit page_navigation needs only one: the
+        // user asked for it, and the `> 1` threshold used to swallow it
+        // silently.
+        it('renders a custom navigation with a single entry', () => {
+            const result = getMetaData({
+                pagesData: [
+                    page('S', '/s.html', '/', {
+                        page_navigation: [{ href: '/index.html', name: 'Home' }],
+                    }),
+                ],
+            })
+
+            expect(result[0].meta.pageNav.elements).toEqual([
+                { href: '/index.html', name: 'Home' },
+            ])
+        })
+
+        it('still emits nothing for a directory with a single page', () => {
+            const result = getMetaData({
+                pagesData: [page('Only', '/docs/only.html', '/docs')],
+            })
+
+            expect(result[0].meta.pageNav.elements).toEqual([])
+        })
+
+        it('emits nothing for pages at the site root', () => {
+            const result = getMetaData({
+                pagesData: [
+                    page('Home', '/index.html', '/'),
+                    page('About', '/about.html', '/'),
+                ],
+            })
+
+            expect(result[0].meta.pageNav.elements).toEqual([])
+            expect(result[1].meta.pageNav.elements).toEqual([])
         })
     })
 

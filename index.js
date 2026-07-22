@@ -65,6 +65,33 @@ function getPageNavigation(pagesData, currentHref) {
 }
 
 /**
+ * A navigation entry must be a plain object, because the template reads
+ * `item.current`, `item.href` and `item.name` off it.
+ *
+ * `null` is the case that mattered: an empty list item under
+ * `page_navigation:` is parsed by js-yaml as null, survived every check here,
+ * and then threw `Cannot read properties of null` inside the template. Nothing
+ * in the generator catches a render error, so one page's YAML typo killed the
+ * whole build.
+ *
+ * @param {*} item - Candidate navigation entry
+ * @param {string} href - Current page href, for the warning
+ * @returns {boolean} True when the entry can be rendered
+ */
+function isUsableEntry(item, href) {
+    const usable =
+        typeof item === 'object' && item !== null && !Array.isArray(item)
+
+    if (!usable) {
+        console.warn(
+            `⚠️  plugin-page-navigation: skipping an invalid page_navigation entry on ${href} — each entry must be a mapping with href and name.`
+        )
+    }
+
+    return usable
+}
+
+/**
  * Inject page navigation into each page's meta data.
  * @param {Object} data - The data object containing pagesData
  * @param {Array} data.pagesData - Array of page data objects
@@ -83,14 +110,21 @@ export function getMetaData(data) {
     const activeClass = config.active_page_nav_class || DEFAULT_ACTIVE_CLASS
 
     return data.pagesData.map(({ content, meta }) => {
-        const pageNav =
-            meta.page_navigation || getPageNavigation(data.pagesData, meta.href)
+        const custom = meta.page_navigation
+        const isCustom = Boolean(custom)
+        const pageNav = custom || getPageNavigation(data.pagesData, meta.href)
 
         // Must be an array. A string `page_navigation` passed the old
         // `length > 1` check and was handed to the template as a string, which
         // pug then iterated one character at a time.
-        const elements =
-            Array.isArray(pageNav) && pageNav.length > 1 ? pageNav : []
+        const entries = Array.isArray(pageNav)
+            ? pageNav.filter((item) => isUsableEntry(item, meta.href))
+            : []
+
+        // An explicit `page_navigation` needs only one entry: the user asked
+        // for it. A *derived* sibling nav needs two, because a lone page
+        // linking to nothing but itself is noise.
+        const elements = entries.length >= (isCustom ? 1 : 2) ? entries : []
 
         return {
             content,
