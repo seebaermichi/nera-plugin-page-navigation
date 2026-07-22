@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.4.1] - 2026-07-22
+
+### Documentation
+
+-   **recommend running this plugin last.** Pages created by another plugin —
+    `@nera-static/plugin-tags`' tag overview pages, for instance — do not exist
+    when this plugin runs in its default alphabetical slot, so they get no
+    `meta.pageNav` at all. Listing `plugin-page-navigation` under `end:` in
+    `config/plugin-order.yaml` gives them navigation like any other directory:
+    each tag overview page becomes a sibling of the others, with the current one
+    highlighted. Safe in the ordering sense too — the plugin reads only
+    generator-produced fields and writes only `meta.pageNav`
+-   added a guarded Pug snippet for custom markup. A missing `meta.pageNav` is
+    `undefined`, so reading `.elements` off it throws, and nothing in the
+    generator catches a render error — one such page fails the whole build.
+    Ordering fixes today's case; the guard is what stays correct when another
+    page-generating plugin is added later
+-   Compatibility now splits the two floors: the plugin itself is v4.1.0+, while
+    the recommended `config/plugin-order.yaml` entry needs **v4.2.0+**, where
+    that file started being read
+-   2.4.0 described this gap as something to work around rather than to fix, on
+    the reasoning that navigation across generated pages was unwanted. That was
+    a preference, not a defect: including the current page and highlighting it
+    is how this plugin works everywhere else. Corrected here
+
 ## [2.4.0] - 2026-07-22
 
 ### Fixed
