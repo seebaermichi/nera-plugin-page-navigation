@@ -5,6 +5,8 @@
 
 A plugin for the [Nera](https://github.com/seebaermichi/nera) static site generator that creates navigation between sibling pages or allows custom definitions via frontmatter. Lightweight, flexible, and easy to integrate in any layout.
 
+📖 **Documentation:** [nera.js.org](https://nera.js.org)
+
 ## ✨ Features
 
 - Automatically adds navigation based on sibling pages
@@ -314,6 +316,7 @@ Michael Becker
 
 - [Plugin Repository](https://github.com/seebaermichi/nera-plugin-page-navigation)
 - [NPM Package](https://www.npmjs.com/package/@nera-static/plugin-page-navigation)
+- [Nera Website](https://nera.js.org)
 - [Nera Static Site Generator](https://github.com/seebaermichi/nera)
 
 ## 🧩 Compatibility
