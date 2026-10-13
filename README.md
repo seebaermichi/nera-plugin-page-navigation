@@ -227,6 +227,13 @@ include /vendor/plugin-page-navigation/page-navigation
 
 Uncomment the layout option that suits your needs inside the template file.
 
+`+simpleNav` and `+pipeSeparated` name their `<nav>` with `aria-label`, so it
+stays distinct from your main menu for screen readers (and `nera check`
+reports no `a11y-nav-name`). The label is the translation key
+`Page navigation`; translate it under `translations.<lang>` in
+`config/app.yaml`, or pass your own: `+simpleNav(t('In this section'))`.
+`+linkList` renders a `<ul>`: wrap it in your own labelled `nav`.
+
 ## 🎨 Styling
 
 The plugin uses BEM CSS methodology:
@@ -255,7 +262,7 @@ second one current, the shipped mixins produce:
 `+simpleNav`:
 
 ```html
-<nav class="page-nav">
+<nav class="page-nav" aria-label="Page navigation">
     <a class="page-nav__link" href="/index.html">Home</a>
     <a class="page-nav__link page-nav__link--active" href="/about.html">About</a>
 </nav>
@@ -264,7 +271,7 @@ second one current, the shipped mixins produce:
 `+pipeSeparated`:
 
 ```html
-<nav class="page-nav page-nav--pipe-separated">
+<nav class="page-nav page-nav--pipe-separated" aria-label="Page navigation">
     <a class="page-nav__link" href="/index.html">Home</a>&nbsp;|&nbsp;
     <a class="page-nav__link page-nav__link--active" href="/about.html">About</a>
 </nav>

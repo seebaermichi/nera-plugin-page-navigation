@@ -354,3 +354,27 @@ describe('Page Navigation Plugin', () => {
         })
     })
 })
+
+describe('nav landmark label', () => {
+    const meta = {
+        pageNav: {
+            activeClass: 'page-nav__link--active',
+            elements: [{ href: '/a.html', name: 'A' }, { href: '/b.html', name: 'B', current: true }],
+        },
+    }
+    const render = (call, locals = {}) =>
+        load(pug.render(`include helper/mixins\n${call}`, {
+            filename: path.join(VIEWS, 'x.pug'),
+            meta,
+            ...locals,
+        }))('nav').attr('aria-label')
+
+    for (const mixin of ['simpleNav', 'pipeSeparated']) {
+        it(`+${mixin} names its <nav> through t() and takes an explicit label`, () => {
+            expect(render(`+${mixin}`)).toBe('Page navigation')
+            const t = (key) => ({ 'Page navigation': 'Seitennavigation' })[key] || key
+            expect(render(`+${mixin}`, { t })).toBe('Seitennavigation')
+            expect(render(`+${mixin}('Chapters')`)).toBe('Chapters')
+        })
+    }
+})

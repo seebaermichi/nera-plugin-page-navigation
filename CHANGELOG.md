@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0] - 2026-10-13
+
+### Added
+
+-   **`+simpleNav` and `+pipeSeparated` name their `<nav>`.** Both mixins take
+    an optional `label`, rendered as `aria-label`, defaulting to
+    `t('Page navigation')`. A page with a main menu as well no longer has two
+    unnamed navigation landmarks (`a11y-nav-name` in `nera check`). Classes
+    and structure are unchanged; `+linkList` (a `<ul>`) is untouched. A site
+    that published the template before picks this up with
+    `npx nera-page-navigation --force`, or by adding the attribute to its copy.
+
 ## [2.4.3] - 2026-10-08
 
 ### Fixed

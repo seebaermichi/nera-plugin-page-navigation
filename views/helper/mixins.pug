@@ -2,13 +2,15 @@ mixin link(item, activeClass)
   - const classes = activeClass ? `page-nav__link ${activeClass}` : 'page-nav__link'
   a(href=item.href, class=classes) #{ item.name }
 
-mixin simpleNav()
-  nav.page-nav
+//- `label` names the <nav> landmark (aria-label), so it stays distinct from
+//- the main menu for screen readers; it goes through the site's t().
+mixin simpleNav(label=(typeof t === 'function' ? t('Page navigation') : 'Page navigation'))
+  nav.page-nav(aria-label=label)
     include setup
       +link(item, activeClass)
 
-mixin pipeSeparated()
-  nav.page-nav.page-nav--pipe-separated
+mixin pipeSeparated(label=(typeof t === 'function' ? t('Page navigation') : 'Page navigation'))
+  nav.page-nav.page-nav--pipe-separated(aria-label=label)
     include setup
       if index !== 0
         | &nbsp;|&nbsp;
